@@ -14,7 +14,6 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import DigitButton from './DigitButton';
 
 export const ACTIONS = {
   ADD_DIGIT: 'add-digit',
@@ -122,6 +121,18 @@ function formatOperand(operand) {
   return `${INTEGER_FORMATTER.format(integer)}.${decimal}`
 }
 
+function DigitButton({dispatch, digit, style}): React.JSX.Element {
+  return (
+    <TouchableOpacity style={style} onPress={() => {dispatch({type: ACTIONS.ADD_DIGIT, payload: {digit}})}}><Text style={styles.text}>{digit}</Text></TouchableOpacity>
+  )
+}
+
+function OperationButton({dispatch, operation}): React.JSX.Element {
+  return (
+    <TouchableOpacity style={styles.button} onPress={() => {dispatch({type: ACTIONS.CHOOSE_OPERATION, payload: {operation}})}}><Text style={styles.text}>{operation}</Text></TouchableOpacity>
+  )
+}
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -143,24 +154,24 @@ function App(): React.JSX.Element {
           <Text style={[styles.currentOperand,]}>{formatOperand(currentOperand)}</Text>
         </View>
         <View style={[styles.buttons]}>
-          <TouchableOpacity style={[styles.button,styles.buttonSpanTwo]}><Text>AC</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>DEL</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>/</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>1</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>2</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>3</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>x</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>4</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>5</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>6</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>+</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>7</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>8</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>9</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>-</Text></TouchableOpacity>
-          <TouchableOpacity style={[styles.button,styles.buttonSpanTwo]}><Text>0</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>.</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.button}><Text>=</Text></TouchableOpacity>
+          <TouchableOpacity style={[styles.button,styles.buttonSpanTwo]} onPress={() => {dispatch({type: ACTIONS.CLEAR, payload: null})}}><Text style={styles.text}>AC</Text></TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => {dispatch({type: ACTIONS.DELETE_DIGIT, payload: null})}}><Text style={styles.text}>DEL</Text></TouchableOpacity>
+          <OperationButton operation='÷' dispatch={dispatch}/>
+          <DigitButton style={styles.button} digit='1' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='2' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='3' dispatch={dispatch} />
+          <OperationButton operation='x' dispatch={dispatch}/>
+          <DigitButton style={styles.button} digit='4' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='5' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='6' dispatch={dispatch} />
+          <OperationButton operation='+' dispatch={dispatch}/>
+          <DigitButton style={styles.button} digit='7' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='8' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='9' dispatch={dispatch} />
+          <OperationButton operation='-' dispatch={dispatch}/>
+          <DigitButton style={[styles.button, styles.buttonSpanTwo]} digit='0' dispatch={dispatch} />
+          <DigitButton style={styles.button} digit='.' dispatch={dispatch} />
+          <TouchableOpacity style={styles.button} onPress={() => {dispatch({type: ACTIONS.EVALUATE, payload: null})}}><Text>=</Text></TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
@@ -204,6 +215,10 @@ const styles = StyleSheet.create({
   },
   buttonSpanTwo: {
     width: '50%'
+  },
+  text: {
+    alignSelf: 'center',
+    fontSize: 40
   }
 });
 
